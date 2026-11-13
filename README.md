@@ -63,7 +63,6 @@ Services:
 - Swagger: http://localhost:8000/docs
 - Health: http://localhost:8000/health
 - Jaeger UI: http://localhost:16686
--Dashboard: http://localhost:8000/
 
 The first embedding request downloads `sentence-transformers/all-MiniLM-L6-v2` into the model cache. For a fully offline environment, pre-populate the Hugging Face cache and set `HF_HUB_OFFLINE=1`.
 
