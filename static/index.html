@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Enterprise Operations Agent</title>
+<style>
+:root{--bg:#0b1020;--panel:#121a2c;--panel2:#172238;--line:#26344d;--text:#edf3ff;--muted:#9aabc5;--cyan:#63d8e8;--blue:#7b9cff;--green:#67d6a0;--amber:#f5c66b;--red:#ff8585}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% -10%,#1d3151 0,transparent 38%),var(--bg);color:var(--text);font:14px/1.5 Inter,ui-sans-serif,system-ui,Segoe UI,Arial}
+button,input,textarea,select{font:inherit}button{cursor:pointer;border:1px solid #365071;border-radius:10px;padding:10px 14px;color:var(--text);background:#1d3150}button:hover{border-color:var(--cyan);background:#24405f}button.primary{background:linear-gradient(120deg,#267d94,#345caa);border:0;font-weight:700}button.danger{background:#4a2531;border-color:#70404d}button.small{padding:6px 10px;font-size:12px}
+.shell{display:grid;grid-template-columns:245px 1fr;min-height:100vh}.side{padding:25px 17px;border-right:1px solid var(--line);background:#0c1425}.brand{display:flex;gap:11px;align-items:center;margin:0 7px 30px}.logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#59d7dc,#6685ff);display:grid;place-items:center;color:#081322;font-weight:900;font-size:19px}.brand b{display:block;font-size:14px}.brand small{color:var(--muted)}.nav{display:grid;gap:7px}.nav button{text-align:left;background:transparent;border-color:transparent;color:#b8c6dc}.nav button.active,.nav button:hover{background:#1a2941;border-color:#2d4261;color:#fff}.nav .ico{display:inline-block;width:27px;color:var(--cyan)}.side-note{margin:34px 6px;padding:14px;border:1px solid var(--line);border-radius:13px;color:var(--muted);font-size:12px}.side-note strong{color:var(--text);display:block;margin-bottom:5px}
+main{padding:27px clamp(16px,3vw,42px);max-width:1600px;width:100%;margin:auto}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:24px}.eyebrow{color:var(--cyan);font-size:11px;letter-spacing:1.7px;text-transform:uppercase;font-weight:800}.top h1{font-size:27px;letter-spacing:-.7px;margin:4px 0}.sub{color:var(--muted)}.status{display:flex;align-items:center;gap:8px;border:1px solid var(--line);padding:9px 12px;border-radius:30px;color:var(--muted);white-space:nowrap}.dot{width:8px;height:8px;border-radius:50%;background:var(--amber)}.dot.ok{background:var(--green);box-shadow:0 0 10px #67d6a066}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:18px}.metric,.panel,.feature{background:linear-gradient(145deg,#141f34,#10192a);border:1px solid var(--line);border-radius:16px}.metric{padding:16px}.metric .label{color:var(--muted);font-size:12px}.metric strong{display:block;font-size:25px;margin:5px 0}.metric small{color:var(--muted)}
+.layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(290px,.85fr);gap:16px}.panel{padding:19px;margin-bottom:16px}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}.panel h2{font-size:16px;margin:0}.panel p.hint{color:var(--muted);margin:4px 0 0;font-size:12px}
+textarea,input,select{width:100%;background:#0b1424;border:1px solid #2a3b56;color:var(--text);border-radius:10px;padding:12px;outline:none}textarea:focus,input:focus,select:focus{border-color:var(--cyan)}textarea{min-height:110px;resize:vertical}.chatlog{min-height:100px;max-height:390px;overflow:auto;display:grid;gap:10px;margin:14px 0}.bubble{padding:12px 14px;border-radius:12px;max-width:94%;white-space:pre-wrap}.user{justify-self:end;background:#213c5b}.agent{background:#17263b;border:1px solid #2c415f}.bubble .meta{font-size:10px;color:var(--cyan);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}.composer{display:grid;grid-template-columns:1fr auto;gap:9px;align-items:end}.composer textarea{min-height:56px;max-height:130px}.chips{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}.chips button{font-size:11px;padding:7px 10px;color:#bcd4e9;background:#13253a}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{display:grid;gap:6px;margin-bottom:11px}.field label{font-size:12px;color:var(--muted)}.result{border:1px solid var(--line);border-radius:11px;padding:12px;margin:8px 0;background:#0d1728}.result small{color:var(--muted)}.tag{display:inline-block;border:1px solid #36516d;border-radius:30px;padding:3px 8px;font-size:10px;color:#b8d8e8}.tag.green{color:var(--green);border-color:#346b59}.tag.amber{color:var(--amber);border-color:#725a32}.tag.red{color:var(--red);border-color:#70404d}
+table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--muted);font-weight:600}.empty{color:var(--muted);padding:18px;text-align:center;border:1px dashed #34445d;border-radius:10px}.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.feature{padding:15px}.feature .symbol{font-size:19px;color:var(--cyan)}.feature h3{font-size:13px;margin:8px 0 4px}.feature p{font-size:12px;color:var(--muted);margin:0}.page{display:none}.page.active{display:block}.notice{border:1px solid #725a32;background:#2b2518;color:#f5d99c;border-radius:10px;padding:11px 13px;font-size:12px;margin:12px 0}.muted{color:var(--muted)}.toolbar{display:flex;gap:8px;flex-wrap:wrap}.source{font-size:12px;color:#c2d6ed;border-left:2px solid var(--cyan);padding:7px 10px;margin:7px 0;background:#101d30}.approval{display:flex;justify-content:space-between;gap:12px;align-items:center}.approval .actions{display:flex;gap:6px}.toast{position:fixed;right:20px;bottom:20px;background:#1b2e46;border:1px solid #45617f;border-radius:12px;padding:12px 16px;display:none;max-width:360px;z-index:5}
+@media(max-width:900px){.shell{grid-template-columns:1fr}.side{border-right:0;border-bottom:1px solid var(--line);padding:12px}.brand{margin:4px 8px 12px}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap}.side-note{display:none}.layout{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}.feature-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){main{padding:18px 12px}.top{align-items:flex-start;flex-direction:column}.metrics{gap:8px}.metric{padding:12px}.metric strong{font-size:21px}.feature-grid{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}.composer{grid-template-columns:1fr}.composer button{width:100%}}
+</style></head>
+<body>
+<div class="shell">
+<aside class="side">
+ <div class="brand"><div class="logo">✦</div><div><b>Enterprise Ops Agent</b><small>Governed operations layer</small></div></div>
+ <nav class="nav">
+  <button class="active" data-page="overview"><span class="ico">▦</span>Overview</button>
+  <button data-page="workspace"><span class="ico">✧</span>Agent workspace</button>
+  <button data-page="knowledge"><span class="ico">▤</span>Knowledge base</button>
+  <button data-page="approvals"><span class="ico">✓</span>Approvals</button>
+  <button data-page="audit"><span class="ico">◷</span>Audit trail</button>
+  <button data-page="capabilities"><span class="ico">◈</span>Capabilities</button>
+ </nav>
+ <div class="side-note"><strong>Governed by design</strong>The agent can retrieve and prepare. Business-impacting actions require an authorized human decision.</div>
+</aside>
+<main>
+ <header class="top"><div><div class="eyebrow">Enterprise AI control plane</div><h1 id="pageTitle">Operations overview</h1><div class="sub">One interface to ask, retrieve, inspect and govern operational work.</div></div><div class="status"><span class="dot" id="healthDot"></span><span id="healthText">Checking API…</span></div></header>
+
+<section class="page active" id="overview">
+ <div class="metrics">
+  <div class="metric"><div class="label">API status</div><strong id="mApi">—</strong><small>FastAPI service</small></div>
+  <div class="metric"><div class="label">Knowledge chunks</div><strong id="mKnowledge">—</strong><small>Indexed document segments</small></div>
+  <div class="metric"><div class="label">Pending approvals</div><strong id="mPending">—</strong><small>Awaiting human decision</small></div>
+  <div class="metric"><div class="label">Audit events</div><strong id="mAudit">—</strong><small>Recorded system activity</small></div>
+ </div>
+ <div class="layout">
+  <div>
+   <div class="panel"><div class="panel-head"><div><h2>Try the agent</h2><p class="hint">Ask a policy, operational-data or SAP question—or stage a PO request.</p></div><span class="tag">Live API</span></div>
+    <div class="chips">
+     <button onclick="quick('What approval is required by purchase order policy?')">Ask policy</button>
+     <button onclick="quick('Show open purchase orders')">List open POs</button>
+     <button onclick="quick('Read purchase orders from SAP')">Read SAP POs</button>
+     <button onclick="quick('Create a purchase order for SUP-1001 for INR 125000')">Stage PO request</button>
+    </div>
+    <div id="overviewChat" class="chatlog"><div class="empty">Run a live request to see the route, result, evidence and approval state here.</div></div>
+    <div class="composer"><textarea id="overviewPrompt" placeholder="e.g. Show open purchase orders"></textarea><button class="primary" onclick="sendChat('overview')">Run agent →</button></div>
+   </div>
+   <div class="panel"><div class="panel-head"><h2>Recent approvals</h2><button class="small" onclick="loadApprovals()">Refresh</button></div><div id="overviewApprovals" class="empty">Enter approver credentials in the Approvals page to view the queue.</div></div>
+  </div>
+  <div>
+   <div class="panel"><div class="panel-head"><h2>What this MVP demonstrates</h2><span class="tag green">Implemented paths</span></div>
+    <div class="result"><b>01 · Governed routing</b><br><small>Deterministic routing to RAG, read-only SQL, SAP read or write proposal.</small></div>
+    <div class="result"><b>02 · Enterprise retrieval</b><br><small>Document chunks, embeddings, pgvector similarity search and source references.</small></div>
+    <div class="result"><b>03 · Human-controlled actions</b><br><small>PO proposal → pending approval → mock execution or safe failure.</small></div>
+    <div class="result"><b>04 · Evidence</b><br><small>Approval states, audit events and Jaeger traces.</small></div>
+   </div>
+   <div class="panel"><h2>Runtime configuration</h2><p class="hint">The current demo defaults to SAP mock mode. Real SAP reads require tenant credentials.</p><div id="runtimeInfo" class="result muted">Loading runtime details…</div><div class="notice">Real SAP writes are deliberately disabled in this build. A mock approval result is not a transaction in your SAP tenant.</div></div>
+  </div>
+ </div>
+</section>
+
+<section class="page" id="workspace">
+ <div class="panel"><div class="panel-head"><div><h2>Agent workspace</h2><p class="hint">Submit a natural-language request and inspect the selected capability.</p></div><span class="tag">LangGraph workflow</span></div>
+ <div class="chips"><button onclick="quick('What approval is required by purchase order policy?','workspace')">Policy question</button><button onclick="quick('Show open purchase orders','workspace')">Open PO records</button><button onclick="quick('Read purchase orders from SAP','workspace')">SAP read</button><button onclick="quick('Create a purchase order for SUP-1001 for INR 125000','workspace')">PO write proposal</button></div>
+ <div class="field"><label>Business request</label><textarea id="workspacePrompt" placeholder="Describe the operational task…"></textarea></div><button class="primary" onclick="sendChat('workspace')">Execute request →</button>
+ <div id="workspaceChat" class="chatlog"><div class="empty">Your request trace and response will appear here.</div></div>
+ </div>
+ <div class="panel"><h2>Routing logic</h2><div class="feature-grid">
+  <div class="feature"><div class="symbol">⌕</div><h3>RAG</h3><p>Policy, procedure and explanatory questions search indexed knowledge.</p></div>
+  <div class="feature"><div class="symbol">▦</div><h3>Read-only SQL</h3><p>Operational list requests query the approved open-PO view only.</p></div>
+  <div class="feature"><div class="symbol">⇄</div><h3>SAP OData read</h3><p>SAP-oriented questions call the PurchaseOrders read adapter.</p></div>
+  <div class="feature"><div class="symbol">⛨</div><h3>Write proposal</h3><p>PO creation intent is validated and staged for an approver.</p></div>
+ </div></div>
+</section>
+
+<section class="page" id="knowledge">
+ <div class="layout">
+  <div class="panel"><div class="panel-head"><div><h2>Ingest enterprise knowledge</h2><p class="hint">Add policy, SOP or reference text to the searchable knowledge base.</p></div><span class="tag">pgvector</span></div>
+   <div class="field"><label>Document title</label><input id="docTitle" placeholder="e.g. Purchase Order Approval Policy"></div>
+   <div class="field"><label>Source / reference</label><input id="docSource" placeholder="e.g. procurement-policy-v2.pdf"></div>
+   <div class="field"><label>Document text</label><textarea id="docText" style="min-height:210px" placeholder="Paste extracted document text here…"></textarea></div>
+   <div class="toolbar"><button class="primary" onclick="ingestKnowledge()">Index document</button><button onclick="document.getElementById('docFile').click()">Load .txt file</button><input type="file" id="docFile" accept=".txt,.md,.csv" hidden onchange="loadTextFile(event)"></div>
+   <p class="hint">This UI indexes pasted text or text files. It does not perform PDF/image OCR or automatically extract files.</p>
+   <div id="ingestResult"></div>
+  </div>
+  <div class="panel"><h2>Search indexed knowledge</h2><p class="hint">Inspect matching chunks and relevance scores.</p><div class="field"><label>Search question</label><input id="knowledgeQuery" placeholder="What is the PO approval threshold?"></div><button class="primary" onclick="searchKnowledge()">Search knowledge</button><div id="knowledgeResults" style="margin-top:12px"><div class="empty">Search results will appear here.</div></div></div>
+ </div>
+</section>
+
+<section class="page" id="approvals">
+ <div class="panel"><div class="panel-head"><div><h2>Human approval queue</h2><p class="hint">Approver-only API. Enter the configured demo approver key to load and decide requests.</p></div><span class="tag amber">Human-in-the-loop</span></div>
+  <div class="grid2"><div class="field"><label>Approver key (X-Approver-Key)</label><input id="approverKey" type="password" placeholder="Enter key configured in .env"></div><div class="field"><label>Approver identity</label><input id="approverId" value="demo-approver" placeholder="Your approver ID"></div></div>
+  <div class="toolbar"><button class="primary" onclick="loadApprovals()">Load pending approvals</button><button onclick="loadApprovals('ALL')">Load all statuses</button></div><div id="approvalList" style="margin-top:15px"><div class="empty">Authenticate to view approval records.</div></div>
+ </div>
+ <div class="notice">In mock mode, approval produces a MOCK document reference only. In OData mode, actual writes still fail closed because tenant-specific CSRF, token refresh, idempotency and write allowlisting are not implemented.</div>
+</section>
+
+<section class="page" id="audit">
+ <div class="panel"><div class="panel-head"><div><h2>Audit trail</h2><p class="hint">Review request routing, tool activity, knowledge ingestion and approval decisions.</p></div><button class="primary" onclick="loadAudit()">Refresh audit events</button></div>
+ <div class="grid2"><div class="field"><label>Approver key</label><input id="auditKey" type="password" placeholder="Same configured approver key"></div><div class="field"><label>Maximum events</label><select id="auditLimit"><option>50</option><option>100</option><option>250</option><option>500</option></select></div></div><div id="auditList"><div class="empty">Authenticate to load the audit log.</div></div></div>
+</section>
+
+<section class="page" id="capabilities">
+ <div class="panel"><div class="panel-head"><div><h2>Capability map</h2><p class="hint">What the current repository can actually demonstrate today.</p></div><span class="tag green">MVP scope</span></div>
+ <div class="feature-grid">
+  <div class="feature"><div class="symbol">⌘</div><h3>Natural-language intake</h3><p>Accepts a user ID and request through the chat API.</p></div>
+  <div class="feature"><div class="symbol">⇢</div><h3>Policy-first routing</h3><p>Keyword rules select a controlled workflow path; it is not an LLM planner.</p></div>
+  <div class="feature"><div class="symbol">▤</div><h3>Document RAG</h3><p>Chunking, Sentence Transformer embeddings, pgvector cosine search and source metadata.</p></div>
+  <div class="feature"><div class="symbol">▦</div><h3>Constrained SQL</h3><p>Single SELECT/CTE; allowlisted v_open_purchase_orders view; DB read-only transaction.</p></div>
+  <div class="feature"><div class="symbol">⇄</div><h3>SAP OData read adapter</h3><p>Mock PO read or configured bearer-token GET to PurchaseOrders.</p></div>
+  <div class="feature"><div class="symbol">⛨</div><h3>Approval workflow</h3><p>Validates supplier ID and INR amount, creates a pending PO proposal, supports approve/reject.</p></div>
+  <div class="feature"><div class="symbol">≋</div><h3>Read-only MCP server</h3><p>Publishes search_knowledge and run_readonly_sql tools. No write tools.</p></div>
+  <div class="feature"><div class="symbol">◷</div><h3>Audit events</h3><p>Stores request routes, retrieval/query activity and approval decisions in PostgreSQL.</p></div>
+  <div class="feature"><div class="symbol">⌁</div><h3>Distributed tracing</h3><p>OpenTelemetry instrumentation exported to Jaeger in Docker Compose.</p></div>
+ </div></div>
+ <div class="panel"><h2>Not implemented / not to be claimed</h2><div class="notice">This is a production-oriented reference MVP, not a production-certified autonomous agent.</div>
+ <ul class="muted"><li>No autonomous multi-agent collaboration or LLM reasoning/planning loop.</li><li>No unrestricted SQL, writes, or broad SAP business-object coverage.</li><li>No real SAP PO creation: real writes are intentionally disabled.</li><li>No SSO/OIDC, RBAC groups, tenant isolation or document-level ACL enforcement.</li><li>No PDF/image OCR, email/Teams/Slack connectors, scheduler or workflow designer.</li><li>No built-in model evaluation suite, token-cost dashboard or business KPI analytics.</li><li>Routing is deterministic keyword classification and RAG returns retrieved excerpts rather than a generated synthesis.</li></ul></div>
+</section>
+<div class="muted" style="font-size:11px;padding:8px 2px 25px">Enterprise Operations Agent · Local evaluation UI · Verify every result against the connected source system.</div>
+</main></div><div class="toast" id="toast"></div>
+<script>
+const $=id=>document.getElementById(id);
+const titles={overview:"Operations overview",workspace:"Agent workspace",knowledge:"Knowledge base",approvals:"Human approvals",audit:"Audit trail",capabilities:"Capabilities"};
+document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x.id===b.dataset.page));$("pageTitle").textContent=titles[b.dataset.page]}));
+function toast(s){$("toast").textContent=s;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",3500)}
+async function api(path,opts={}){let r=await fetch(path,opts);let data;try{data=await r.json()}catch{data={detail:await r.text()}}if(!r.ok)throw new Error(data.detail||data.message||`HTTP ${r.status}`);return data}
+async function refreshHealth(){try{let h=await api("/health");$("healthDot").className="dot ok";$("healthText").textContent="API online · "+h.sap_mode+" SAP";$("mApi").textContent="Online";$("runtimeInfo").textContent=`Environment: ${h.status} · Database: ${h.database} · SAP mode: ${h.sap_mode}`}catch(e){$("healthDot").className="dot";$("healthText").textContent="API unavailable";$("mApi").textContent="Offline";$("runtimeInfo").textContent=e.message}}
+function addBubble(target,who,html){let el=$(target);if(el.querySelector(".empty"))el.innerHTML="";let d=document.createElement("div");d.className="bubble "+(who==="You"?"user":"agent");d.innerHTML=`<div class="meta">${who}</div>${html}`;el.appendChild(d);el.scrollTop=el.scrollHeight}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function quick(s,where="overview"){let id=where==="workspace"?"workspacePrompt":"overviewPrompt";$(id).value=s;sendChat(where)}
+async function sendChat(where){let input=$(where==="workspace"?"workspacePrompt":"overviewPrompt"),target=where==="workspace"?"workspaceChat":"overviewChat",msg=input.value.trim();if(!msg)return;addBubble(target,"You",esc(msg));input.value="";addBubble(target,"Agent","<span class='muted'>Routing request and running capability…</span>");try{let r=await api("/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user_id:"demo-user",message:msg})});let last=$(target).lastElementChild;let route=esc(r.route||"unknown"),status=esc(r.status||"completed");let html=`<div class="meta">Route: ${route} · Status: ${status}</div><div>${esc(r.answer||"Request completed.")}</div>`;if(r.approval_id)html+=`<div class="result"><b>Approval ID</b><br><code>${esc(r.approval_id)}</code><br><small>Open Approvals and authenticate to review this request.</small></div>`;if(r.sources?.length){html+=`<div style="margin-top:10px"><b>Retrieved evidence</b>${r.sources.map(x=>`<div class="source"><b>${esc(x.title)}</b> · ${esc(x.source)} · score ${Number(x.score).toFixed(3)}<br>${esc(x.content)}</div>`).join("")}</div>`}if(r.tool_result)html+=`<div class="result"><b>Tool result</b><pre style="white-space:pre-wrap;overflow-wrap:anywhere;color:#b9d4e9">${esc(JSON.stringify(r.tool_result,null,2))}</pre></div>`;last.innerHTML=html;refreshMetrics()}catch(e){$(target).lastElementChild.innerHTML=`<span class="tag red">Request failed</span><br>${esc(e.message)}`}}
+async function ingestKnowledge(){let title=$("docTitle").value.trim(),source=$("docSource").value.trim(),text=$("docText").value.trim();if(!title||!source||!text){toast("Provide title, source and document text.");return}try{let r=await api("/knowledge",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({title,source,text})});$("ingestResult").innerHTML=`<div class="result"><span class="tag green">Indexed</span><br>${r.chunks_indexed} chunks added to the knowledge base.</div>`;toast("Knowledge indexed successfully.");refreshMetrics()}catch(e){$("ingestResult").innerHTML=`<div class="notice">${esc(e.message)}</div>`}}
+function loadTextFile(ev){let f=ev.target.files[0];if(!f)return;let reader=new FileReader();reader.onload=()=>{$("docText").value=reader.result;$("docSource").value=f.name;if(!$("docTitle").value)$("docTitle").value=f.name.replace(/\.[^.]+$/,"")};reader.readAsText(f)}
+async function searchKnowledge(){let q=$("knowledgeQuery").value.trim();if(!q)return;try{let r=await api("/knowledge/search?q="+encodeURIComponent(q));$("knowledgeResults").innerHTML=r.results.length?r.results.map(x=>`<div class="result"><b>${esc(x.title)}</b><br><small>${esc(x.source)} · relevance ${Number(x.score).toFixed(3)}</small><p>${esc(x.content)}</p></div>`).join(""):"<div class='empty'>No matching indexed chunks.</div>"}catch(e){$("knowledgeResults").innerHTML=`<div class="notice">${esc(e.message)}</div>`}}
+function authHeaders(key){return {"X-Approver-Key":key}}
+async function loadApprovals(mode){let key=$("approverKey").value;if(!key){toast("Enter approver key first.");return}try{let r=await api("/approvals?status=PENDING",{headers:authHeaders(key)});let list=r.approvals||[];$("approvalList").innerHTML=list.length?list.map(a=>`<div class="result"><div class="approval"><div><b>${esc(a.action_type)}</b> <span class="tag amber">${esc(a.status)}</span><br><small>${esc(a.requester)} · ${new Date(a.created_at).toLocaleString()}</small><br><code>${esc(a.id)}</code></div><div class="actions"><button class="small primary" onclick="decide('${esc(a.id)}','approve')">Approve</button><button class="small danger" onclick="decide('${esc(a.id)}','reject')">Reject</button></div></div><pre style="white-space:pre-wrap;color:#b9d4e9;font-size:11px">${esc(JSON.stringify(a.payload,null,2))}</pre></div>`).join(""):"<div class='empty'>No pending approvals.</div>";$("overviewApprovals").innerHTML=list.length?`${list.length} pending approval(s). See Approvals for decisions.`:"No pending approvals.";$("mPending").textContent=list.length}catch(e){$("approvalList").innerHTML=`<div class="notice">${esc(e.message)}</div>`;toast(e.message)}}
+async function decide(id,action){let key=$("approverKey").value,headers={...authHeaders(key),"Content-Type":"application/json","X-Approver-Id":$("approverId").value||"approver"};try{let r=await api(`/approvals/${id}/${action}`,{method:"POST",headers,body:action==="reject"?JSON.stringify({reason:prompt("Reason for rejection?")||"Rejected by approver"}):"{}"});toast(`Approval ${r.status}`);loadApprovals();refreshMetrics()}catch(e){toast(e.message)}}
+async function loadAudit(){let key=$("auditKey").value;if(!key){toast("Enter approver key first.");return}try{let r=await api("/audit?limit="+$("auditLimit").value,{headers:authHeaders(key)});$("auditList").innerHTML=r.events.length?`<table><thead><tr><th>Time</th><th>Event</th><th>Actor</th><th>Details</th></tr></thead><tbody>${r.events.map(e=>`<tr><td>${new Date(e.created_at).toLocaleString()}</td><td>${esc(e.event_type)}</td><td>${esc(e.actor)}</td><td><code>${esc(JSON.stringify(e.details))}</code></td></tr>`).join("")}</tbody></table>`:"<div class='empty'>No audit events yet.</div>";$("mAudit").textContent=r.events.length}catch(e){$("auditList").innerHTML=`<div class="notice">${esc(e.message)}</div>`}}
+async function refreshMetrics(){try{let r=await api("/knowledge/search?q=enterprise&top_k=20");$("mKnowledge").textContent=r.results.length+(r.results.length===20?"+":"")}catch{$("mKnowledge").textContent="—"}}
+refreshHealth();refreshMetrics();setInterval(refreshHealth,20000);
+</script></body></html>

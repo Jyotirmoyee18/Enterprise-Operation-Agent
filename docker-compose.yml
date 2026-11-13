@@ -1,0 +1,33 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: enterprise_ops
+      POSTGRES_USER: agent
+      POSTGRES_PASSWORD: agent
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data, ./db/init.sql:/docker-entrypoint-initdb.d/001-init.sql:ro]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agent -d enterprise_ops"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  jaeger:
+    image: jaegertracing/all-in-one:1.67.0
+    ports: ["16686:16686", "4317:4317", "4318:4318"]
+  api:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://agent:agent@db:5432/enterprise_ops
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
+      HF_HOME: /root/.cache/huggingface
+    ports: ["8000:8000"]
+    restart: unless-stopped
+    depends_on:
+      db: {condition: service_healthy}
+      jaeger: {condition: service_started}
+    volumes: [hf-cache:/root/.cache/huggingface]
+volumes:
+  pgdata:
+  hf-cache:
